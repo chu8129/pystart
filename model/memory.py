@@ -1,14 +1,8 @@
 import datetime
 from peewee import AutoField, IntegerField, FloatField, DateTimeField
-import peewee_async
-from enums.memory import MetricType, StatusLevel
-from providers.database import db
 
-
-class BaseModel(peewee_async.AioModel):
-
-    class Meta:
-        database = db
+from schema.enums.memory import MetricType, StatusLevel
+from . import BaseModel
 
 
 class MemoryMetric(BaseModel):

@@ -1,12 +1,12 @@
 import psutil
 from datetime import datetime
 from typing import Dict, Any
-from enums.memory import MetricType
+from schema.enums.memory import MetricType
 
 
 def get_memory_usage() -> Dict[str, Any]:
     """
-    获取内存使用量 - Get memory usage
+    Get memory usage
 
     Returns:
         Dict containing memory information:
@@ -15,10 +15,8 @@ def get_memory_usage() -> Dict[str, Any]:
         - free: Free memory in GB
         - percentage: Usage percentage
     """
-    # 获取内存信息 - Get memory information
     memory = psutil.virtual_memory()
 
-    # 转换为GB单位 - Convert to GB units
     total_gb = round(memory.total / (1024**3), 2)
     used_gb = round(memory.used / (1024**3), 2)
     free_gb = round(memory.available / (1024**3), 2)
