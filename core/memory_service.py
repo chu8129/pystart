@@ -1,20 +1,17 @@
 from typing import Dict, Any
-from enums.memory import StatusLevel
+
+from fastapi import BackgroundTasks
+from schema.enums.memory import StatusLevel
 from model.memory import MemoryMetric
 from utils.memory import get_memory_usage
-from schemas.memory import MemoryInfoSchema
+from schema.memory import MemoryInfoSchema
 from loguru import logger
 
 
 class MemoryService:
     """Memory service class"""
 
-    async def get_memory_info(self) -> MemoryInfoSchema:
-        """Get current memory information"""
-        memory_data = get_memory_usage()
-        return MemoryInfoSchema(**memory_data)
-
-    async def save_memory_metric(self, memory_data: Dict[str, Any]) -> MemoryMetric:
+    async def save_memory_metric(self, memory_data: Dict[str, Any], background_tasks: BackgroundTasks) -> MemoryMetric:
         """Save memory metric to database"""
         param = dict(
             metric_type=memory_data["metric_type"],
@@ -24,14 +21,14 @@ class MemoryService:
             total_memory=memory_data["total"],
             used_memory=memory_data["used"],
             free_memory=memory_data["free"],
-            recorded_at=memory_data["recorded_at"],
+            recorded_at=str(memory_data["recorded_at"]),
         )
         logger.debug(f"memory param: {param}")
-        metric = await MemoryMetric().aio_create(**param)
-        return metric.to_dict()
+        background_tasks.add_task(lambda p: print(f"db response: {MemoryMetric().save(p)}"), param)
+        return param
 
-    async def get_and_save_memory(self) -> Dict[str, Any]:
+    async def get_and_save_memory(self, background_tasks: BackgroundTasks) -> Dict[str, Any]:
         """Get and save memory information"""
-        memory_data = await self.save_memory_metric(get_memory_usage())
+        memory_data = await self.save_memory_metric(get_memory_usage(), background_tasks)
         logger.info(f" Memory metric saved: {memory_data}")
         return {"memory": MemoryInfoSchema(**memory_data), "status": True}

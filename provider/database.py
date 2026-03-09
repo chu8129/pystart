@@ -1,5 +1,5 @@
+from loguru import logger
 from typing import Optional, List, Any
-
 import peewee
 import peewee_async
 import pymysql
@@ -16,6 +16,7 @@ class MysqlReconnectMixin(ReconnectMixin):
     def execute_sql(self, sql, params=None, commit=None):
         if commit is not None:
             __deprecated__('"commit" has been deprecated and is a no-op.')
+        logger.debug(f"Executing SQL: {sql} with params: {params}")
         return self._reconnect(super(ReconnectMixin, self).execute_sql, sql, params)
 
     async def aio_reconnect(self, async_func, *args, **kwargs):
@@ -126,9 +127,7 @@ class ReconnectPooledPostgresqlDatabase(PgReconnectMixin, peewee_async.PooledPos
     )
 
 
-db = None
-
-# Use MySQL configuration from DB_CONFIG
+logger.debug(f"Database configuration: {DB_CONFIG}")
 db = ReconnectMySQLDatabase(
     database=DB_CONFIG["database"],
     user=DB_CONFIG["user"],

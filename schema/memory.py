@@ -19,4 +19,4 @@ class MemoryResponse(BaseModel):
     """Memory response schema"""
 
     memory: MemoryInfoSchema
-    status: str = Field(..., description="Save status")
+    status: bool = Field(..., description="Save status")

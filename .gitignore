@@ -1,0 +1,20 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*DS_Store
+*.key
+*.crt
+*.pem
+*.swp
+*.bak
+*.keys
+*.npy
+*.png
+*.jpg
+*.jpeg
+*.xlsx
+
+# C extensions
+*.so
